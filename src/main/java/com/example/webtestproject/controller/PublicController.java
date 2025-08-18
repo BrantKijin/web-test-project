@@ -1,19 +1,28 @@
 package com.example.webtestproject.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.webtestproject.common.dto.ApiResponse;
+import com.example.webtestproject.domain.kr_public.dto.NtsValidateRequest;
+import com.example.webtestproject.domain.kr_public.dto.NtsValidateResponse;
 import com.example.webtestproject.domain.kr_public.dto.PublicHolidayEnvelope;
 import com.example.webtestproject.domain.kr_public.service.PublicService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.web.bind.annotation.RequestBody;
+
+
 
 @Tag(name = "[XP비서] 공공데이터 API")
 @RestController
@@ -39,5 +48,14 @@ public class PublicController {
 
 		PublicHolidayEnvelope.PublicHolidayBody holiday = publicService.getHoliday(pageNo, numOfRows, solYear, type);
 		return ApiResponse.success(holiday);
+	}
+
+	@Operation(summary = "[XP비서] 사업자번호 진위확인", tags = {"SOJANG"})
+	@PostMapping("/nts/validate")
+	public ApiResponse<NtsValidateResponse> validate(
+		@RequestBody @Valid NtsValidateRequest request
+	) {
+		NtsValidateResponse result = publicService.validateBusinesses(request);
+		return ApiResponse.success(result);
 	}
 }

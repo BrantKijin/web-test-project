@@ -10,6 +10,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.example.webtestproject.common.exception.XperpCustomException;
 import com.example.webtestproject.common.util.DbUrlUtils;
+import com.example.webtestproject.domain.kr_public.dto.NtsValidateRequest;
+import com.example.webtestproject.domain.kr_public.dto.NtsValidateResponse;
 import com.example.webtestproject.domain.kr_public.dto.PublicHolidayEnvelope;
 
 import lombok.RequiredArgsConstructor;
@@ -69,6 +71,34 @@ public class PublicServiceImpl implements PublicService {
 		}
 
 		return body;
+	}
+
+	@Override
+	public NtsValidateResponse validateBusinesses(NtsValidateRequest request) {
+
+		String encodedServiceKey = "null";
+
+		URI uri = UriComponentsBuilder.fromUriString("https://api.odcloud.kr/api/nts-businessman/v1/validate")
+			.queryParam("serviceKey", encodedServiceKey.trim())
+			.build(true)       // 재인코딩 방지
+			.toUri();
+
+		log.info("[validateBusinesses] POST {}", uri);
+
+		RestClient client = RestClient.create();
+
+		try {
+			return client.post()
+				.uri(uri)
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)
+				.body(request)
+				.retrieve()
+				.body(new ParameterizedTypeReference<NtsValidateResponse>() {
+				});
+		} catch (Exception ex) {
+			throw new XperpCustomException("국세청 진위확인 API 호출 실패", ex);
+		}
 	}
 }
 
