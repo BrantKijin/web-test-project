@@ -1,6 +1,7 @@
 package com.example.webtestproject.domain.kr_public.service;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
@@ -10,6 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.example.webtestproject.common.exception.XperpCustomException;
 import com.example.webtestproject.common.util.DbUrlUtils;
+import com.example.webtestproject.domain.kr_public.dto.HaptNewsItem;
 import com.example.webtestproject.domain.kr_public.dto.NtsValidateRequest;
 import com.example.webtestproject.domain.kr_public.dto.NtsValidateResponse;
 import com.example.webtestproject.domain.kr_public.dto.PublicHolidayEnvelope;
@@ -100,5 +102,7 @@ public class PublicServiceImpl implements PublicService {
 			throw new XperpCustomException("국세청 진위확인 API 호출 실패", ex);
 		}
 	}
+
+
 }
 

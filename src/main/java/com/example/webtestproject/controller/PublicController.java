@@ -1,5 +1,8 @@
 package com.example.webtestproject.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.webtestproject.common.dto.ApiResponse;
+import com.example.webtestproject.domain.kr_public.dto.HaptNewsItem;
 import com.example.webtestproject.domain.kr_public.dto.NtsValidateRequest;
 import com.example.webtestproject.domain.kr_public.dto.NtsValidateResponse;
 import com.example.webtestproject.domain.kr_public.dto.PublicHolidayEnvelope;
+import com.example.webtestproject.domain.kr_public.service.HaptSitemapService;
 import com.example.webtestproject.domain.kr_public.service.PublicService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,5 +62,19 @@ public class PublicController {
 	) {
 		NtsValidateResponse result = publicService.validateBusinesses(request);
 		return ApiResponse.success(result);
+	}
+
+	private final HaptSitemapService service;
+
+	@Operation(summary = "[XP비서] 한국아파트신문 sitemap 프록시(JSON)", tags = {"SOJANG"})
+	@GetMapping("/sitemap")
+	public ApiResponse<List<HaptNewsItem>> getSitemap(
+		@Parameter(description = "최대 반환 건수(최신부터)", example = "100")
+		@RequestParam(value = "limit", required = false, defaultValue = "200") int limit
+	) {
+		List<HaptNewsItem> all = service.getSitemapItems();
+		// 최신순 보장은 원문이 최신순이라 가정. 혹시 몰라 앞부분만 슬라이스.
+		List<HaptNewsItem> sliced = all.size() > limit ? all.subList(0, limit) : all;
+		return ApiResponse.success(sliced);
 	}
 }
