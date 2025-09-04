@@ -26,7 +26,7 @@ public class AptBankExternalServiceImpl implements AptBankExternalService {
 		RestClient restClient = RestClient.create();
 		try {
 			IssuedBalCertListResponse body = restClient.post()
-				.uri("https://svc-aptbank-dev.dataapi.co.kr/api/aptbank/v1/bal-cert/issued-list")
+
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON)
 				.body(request)
